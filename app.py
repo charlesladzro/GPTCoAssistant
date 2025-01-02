@@ -1,15 +1,23 @@
-from flask import Flask, Response
+from flask import Flask, request, Response, redirect
 from auth import require_api_key
 import os
 import importlib
 from openapi import get_openapi_json_endpoint, get_openapi_yaml_endpoint
 from utils.log_request_and_response import log_request_and_response
+from flask_talisman import Talisman
 
 app = Flask(__name__)
+Talisman(app)
 app.json.sort_keys = False
 
 # Apply the logging middleware
 log_request_and_response(app)
+
+@app.before_request
+def enforce_https():
+    # Check if the request is coming from the reverse proxy and is secure
+    if not request.headers.get("X-Forwarded-Proto", "http") == "https":
+        return redirect(request.url.replace("http://", "https://"), code=301)
 
 # Serve the content of README.md at the root endpoint
 @app.route('/', methods=['GET'])

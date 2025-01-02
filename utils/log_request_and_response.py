@@ -20,16 +20,25 @@ def log_request_and_response(app):
         ignored_endpoints = ["/log_operations", "/openapi.json", "/openapi.yaml"]
 
         if request.path not in ignored_endpoints:
+            # Initialize the log entry with common details
             log_entry = {
                 "timestamp": datetime.now().isoformat(),
                 "method": request.method,
-                "url": request.url
+                "url": request.url,
+                "status_code": response.status_code
             }
 
-            if response.status_code != 200:
-                log_entry["response_data"] = response.get_data(as_text=True)
-                log_entry["body"] = request.get_data(as_text=True),
-                log_entry["status_code"] = response.status_code
+            # Handle response data (always JSON)
+            response_data = response.get_json(silent=True) or {}
+            if isinstance(response_data, dict):
+                response_data.pop("content", None)
+            log_entry["response_data"] = json.dumps(response_data)
+
+            # Handle request data (always JSON)
+            request_data = request.get_json(silent=True) or {}
+            if isinstance(request_data, dict):
+                request_data.pop("content", None)
+            log_entry["body"] = json.dumps(request_data)
 
             if not(os.path.isdir(LOG_DIR)):
                 os.makedirs(LOG_DIR, exist_ok=True)

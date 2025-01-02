@@ -48,16 +48,16 @@ def commit_changes(commit_message_key):
                         # Commit the changes
                         subprocess.run(["git", "commit", "-m", commit_message], cwd=repo_path, check=True, text=True)
 
-                        # Retrieve the commit SHA
-                        result = subprocess.run(
-                            ["git", "rev-parse", "HEAD"],
-                            cwd=repo_path,
-                            capture_output=True,
-                            text=True,
-                            check=True
-                        )
-                        commit_sha = result.stdout.strip()
-                        response["commit_sha"] = commit_sha  # Add the SHA to the response
+                    # Retrieve the commit SHA
+                    result = subprocess.run(
+                        ["git", "rev-parse", "HEAD"],
+                        cwd=repo_path,
+                        capture_output=True,
+                        text=True,
+                        check=True
+                    )
+                    commit_sha = result.stdout.strip()
+                    response["commit_sha"] = commit_sha  # Add the SHA to the response
 
                 except subprocess.CalledProcessError as e:
                     response["warning"] = f"Git operation failed: {str(e)}"
