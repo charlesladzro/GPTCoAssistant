@@ -23,11 +23,13 @@ def log_request_and_response(app):
             log_entry = {
                 "timestamp": datetime.now().isoformat(),
                 "method": request.method,
-                "url": request.url,
-                "body": request.get_data(as_text=True),
-                "status_code": response.status_code,
-                "response_data": response.get_data(as_text=True),
+                "url": request.url
             }
+
+            if response.status_code != 200:
+                log_entry["response_data"] = response.get_data(as_text=True)
+                log_entry["body"] = request.get_data(as_text=True),
+                log_entry["status_code"] = response.status_code
 
             if not(os.path.isdir(LOG_DIR)):
                 os.makedirs(LOG_DIR, exist_ok=True)
