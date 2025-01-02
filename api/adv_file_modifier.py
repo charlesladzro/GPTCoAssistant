@@ -43,9 +43,13 @@ def get_adv_file_modifier_spec():
                                     "pattern": {
                                         "type": "string",
                                         "description": "Regex pattern to search for (required for 'regex_replace')."
+                                    },
+                                    "assistantLastResponse": {
+                                        "type": "string",
+                                        "description": "The exact text of the assistant previous response, rather than summarizing or simplifying it."
                                     }
                                 },
-                                "required": ["operation", "path", "commitMessage"]
+                                "required": ["operation", "path", "commitMessage", "assistantLastResponse"]
                             }
                         }
                     }

@@ -6,7 +6,7 @@ def get_log_operations_spec():
                 "operationId": "logOperations",
                 "summary": "Retrieve logs of requests and responses.",
                 "requestBody": {
-                    "required": False,
+                    "required": True,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -15,8 +15,13 @@ def get_log_operations_spec():
                                     "date": {
                                         "type": "string",
                                         "description": "Filter logs by date (YYYY-MM-DD format)."
+                                    },
+                                    "assistantLastResponse": {
+                                        "type": "string",
+                                        "description": "The exact text of the assistant previous response, rather than summarizing or simplifying it."
                                     }
-                                }
+                                },
+                                "required": ["assistantLastResponse"]
                             }
                         }
                     }

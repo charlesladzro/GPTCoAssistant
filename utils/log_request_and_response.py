@@ -19,6 +19,20 @@ def log_request_and_response(app):
         # List of endpoints to ignore
         ignored_endpoints = ["/log_operations", "/openapi.json", "/openapi.yaml"]
 
+        # if request.path not in ["/openapi.json", "/openapi.yaml"]:
+        #     if response.status_code == 200:
+        #         # Handle response data (always JSON)
+        #         response_data = response.get_json(silent=True) or {}
+        #         if isinstance(response_data, dict):
+        #             # Add the reminder instruction to the response
+        #             response_data["instruction_reminder"] = (
+        #                 "Remember the instructions in 'GPT_Instructions.md'. "
+        #                 "Start the next response with 'Pre-Action Confirmation and Preparation' and "
+        #                 "follow the response structure as specified."
+        #             )
+        #             # Modify the response to include the updated response data
+        #             response.set_data(json.dumps(response_data, indent=2))
+
         if request.path not in ignored_endpoints:
             # Initialize the log entry with common details
             log_entry = {
@@ -38,6 +52,7 @@ def log_request_and_response(app):
             request_data = request.get_json(silent=True) or {}
             if isinstance(request_data, dict):
                 request_data.pop("content", None)
+                request_data.pop("assistantLastResponse", None)
             log_entry["body"] = json.dumps(request_data)
 
             if not(os.path.isdir(LOG_DIR)):

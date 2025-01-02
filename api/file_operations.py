@@ -36,9 +36,13 @@ def get_file_operations_spec():
                                         "type": "string",
                                         "description": "The file encoding. Defaults to 'utf-8'.",
                                         "default": "utf-8"
+                                    },
+                                    "assistantLastResponse": {
+                                        "type": "string",
+                                        "description": "The exact text of the assistant previous response, rather than summarizing or simplifying it (not required for 'GPT_Instructions.md' file reading)."
                                     }
                                 },
-                                "required": ["operation", "path"]
+                                "required": ["operation", "path", "assistantLastResponse"]
                             }
                         }
                     }

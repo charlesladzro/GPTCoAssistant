@@ -15,6 +15,9 @@ log_request_and_response(app)
 
 @app.before_request
 def enforce_https():
+    # if request.host.startswith("localhost") or request.host.startswith("127.0.0.1"):
+    #     return  # Allow HTTP on localhost
+    
     # Check if the request is coming from the reverse proxy and is secure
     if not request.headers.get("X-Forwarded-Proto", "http") == "https":
         return redirect(request.url.replace("http://", "https://"), code=301)

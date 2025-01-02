@@ -18,6 +18,10 @@ def git_operations_action():
     target_path = data.get('targetPath', None)  # Pour clone
     files = data.get('files', None)  # Pour add
     resolved_repo_path = resolve_path(repo_path) if repo_path else None
+    assistantLastResponse = data.get("assistantLastResponse")
+
+    if not assistantLastResponse or "Pre-Action Confirmation and Preparation" not in assistantLastResponse:
+        return {"error": "You have not followed the 'Persistent Response Structure' and not starting your last response by 'Pre-Action Confirmation and Preparation' as specified. If you are not familiar with it, please read the file 'GPT_Instructions.md' in root folder. In the file, READ carefully the recommandation about 'assistantLastResponse'."}, 400
 
     if not operation:
         return {"error": "The 'operation' parameter is required."}, 400

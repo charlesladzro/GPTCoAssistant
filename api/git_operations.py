@@ -39,9 +39,13 @@ def get_git_operations_spec():
                                     "files": {
                                         "type": "string",
                                         "description": "Files to add (space-separated list). Defaults to all files."
+                                    },
+                                    "assistantLastResponse": {
+                                        "type": "string",
+                                        "description": "The exact text of the assistant previous response, rather than summarizing or simplifying it."
                                     }
                                 },
-                                "required": ["operation"]
+                                "required": ["operation", "assistantLastResponse"]
                             }
                         }
                     }

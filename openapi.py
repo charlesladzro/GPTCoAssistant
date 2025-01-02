@@ -2,7 +2,6 @@ from flask import jsonify
 import yaml
 import os
 import importlib
-from collections import OrderedDict
 from config import SERVER_URL, TITLE, VERSION
 
 def load_openapi_specs():

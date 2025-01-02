@@ -138,6 +138,15 @@ else
     echo "Directory $START_DIR already exists."
 fi
 
+# Step 6: Copy GPT_Instructions.md to $START_DIR
+if [[ -f "GPT_Instructions.md" ]]; then
+    echo "Copying GPT_Instructions.md to $START_DIR..."
+    cp "GPT_Instructions.md" "$START_DIR/"
+    echo "File GPT_Instructions.md copied successfully."
+else
+    echo "Error: GPT_Instructions.md not found in the current directory."
+fi
+
 # Final Message
 echo "Setup completed successfully!"
 echo "To start the virtual environment, run:"

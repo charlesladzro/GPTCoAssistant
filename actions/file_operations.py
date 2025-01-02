@@ -18,6 +18,11 @@ def file_operations_action():
     encoding = data.get('encoding', 'utf-8')
     content = data.get('content', None)
     commit_message = data.get('commitMessage')
+    assistantLastResponse = data.get("assistantLastResponse")
+
+    if not(operation == 'read' and "GPT_Instructions.md" in path):
+        if not assistantLastResponse or "Pre-Action Confirmation and Preparation" not in assistantLastResponse:
+            return {"error": "You have not followed the 'Persistent Response Structure' and not starting your last response by 'Pre-Action Confirmation and Preparation' as specified. If you are not familiar with it, please read the file 'GPT_Instructions.md' in root folder. In the file, READ carefully the recommandation about 'assistantLastResponse'."}, 400
 
     if not operation or not path:
         return {"error": "The 'operation' and 'path' fields are required in the request body."}, 400

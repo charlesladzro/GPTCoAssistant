@@ -21,6 +21,10 @@ def python_operations_action():
     module_name = data.get('moduleName', None)  # Pour gestion des modules
     inputs_for_test = data.get('inputs_for_test', None)
     commit_message = data.get('commitMessage', None)
+    assistantLastResponse = data.get("assistantLastResponse")
+
+    if not assistantLastResponse or "Pre-Action Confirmation and Preparation" not in assistantLastResponse:
+        return {"error": "You have not followed the 'Persistent Response Structure' and not starting your last response by 'Pre-Action Confirmation and Preparation' as specified. If you are not familiar with it, please read the file 'GPT_Instructions.md' in root folder. In the file, READ carefully the recommandation about 'assistantLastResponse'."}, 400
 
     # Résolution des chemins
     script_path = resolve_path(script_path) if script_path else None
