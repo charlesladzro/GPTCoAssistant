@@ -7,7 +7,7 @@ if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
 fi
 
 # Predefined default values
-DEFAULT_SERVER_URL="http://127.0.0.1:5000"
+DEFAULT_SERVER_URL="127.0.0.1:5000"
 DEFAULT_TITLE="GPTCoAssistant"
 DEFAULT_VERSION="1.0.0"
 DEFAULT_SECRET_API_KEY="default_secret_key_@"
@@ -42,13 +42,22 @@ prompt_for_config_value() {
 # Function to generate a 64-character random SECRET_API_KEY
 generate_secret_key() {
     echo "Generating a 64-character random SECRET_API_KEY..."
-    SECRET_KEY=$(openssl rand -base64 48 | tr -d '\n')
-    echo "Generated SECRET_API_KEY: $SECRET_KEY"
-    read -p "Would you like to use this key? ([y]/n): " use_key
-    use_key=${use_key:-y} # Default to 'y' if input is empty
-    if [[ "$use_key" != "y" ]]; then
-        SECRET_API_KEY=$(prompt_for_config_value "SECRET_API_KEY" "${config_values[SECRET_API_KEY]}" "$SECRET_KEY")
+
+    # Check if a SECRET_API_KEY already exists in config_values
+    if [[ -n "${config_values[SECRET_API_KEY]}" ]]; then
+        echo "An existing SECRET_API_KEY was found."
+        read -p "Would you like to use the existing key? ([y]/n): " use_existing
+        use_existing=${use_existing:-y} # Default to 'y' if input is empty
+        if [[ "$use_existing" == "y" ]]; then
+            SECRET_API_KEY="${config_values[SECRET_API_KEY]}"
+            echo "Using the existing SECRET_API_KEY."
+            return
+        fi
     fi
+
+    # Generate a new SECRET_API_KEY if no existing one is used
+    SECRET_API_KEY=$(openssl rand -base64 48 | tr -d '\n')
+    echo "A new SECRET_API_KEY has been generated and set."
 }
 
 # Function to read existing config or prompt for new values
@@ -72,9 +81,7 @@ manage_config_file() {
 
     # Prompt for each value, using either current or predefined defaults
     START_DIR=$(prompt_for_config_value "Project Name" "${config_values[START_DIR]}" "$DEFAULT_START_DIR")
-    SERVER_URL=$(prompt_for_config_value "SERVER_URL" "${config_values[SERVER_URL]}" "$DEFAULT_SERVER_URL")
-    TITLE=$(prompt_for_config_value "TITLE" "${config_values[TITLE]}" "$DEFAULT_TITLE")
-    VERSION=$(prompt_for_config_value "VERSION" "${config_values[VERSION]}" "$DEFAULT_VERSION")
+    SERVER_URL=$(prompt_for_config_value "SERVER_URL - without https://" "${config_values[SERVER_URL]}" "$DEFAULT_SERVER_URL")
 
     # Automatically generate and assign SECRET_API_KEY
     generate_secret_key
@@ -85,11 +92,21 @@ manage_config_file() {
 [default]
 START_DIR = $START_DIR
 SERVER_URL = $SERVER_URL
-TITLE = $TITLE
-VERSION = $VERSION
+TITLE = $DEFAULT_TITLE
+VERSION = $DEFAULT_VERSION
 SECRET_API_KEY = $SECRET_API_KEY
 EOL
     echo "config.ini created/updated successfully."
+
+    # Add START_DIR and run_app.bat to .git/info/exclude if not already present
+    if [[ -d ".git" ]]; then
+        echo "Checking .git/info/exclude for START_DIR and run_app.bat..."
+        EXCLUDE_FILE=".git/info/exclude"
+        if ! grep -Fxq "$START_DIR" "$EXCLUDE_FILE"; then
+            echo "Adding START_DIR to .git/info/exclude..."
+            echo "$START_DIR" >> "$EXCLUDE_FILE"
+        fi
+    fi
 }
 
 # Step 1: Download and install ngrok
@@ -101,11 +118,28 @@ if [[ "$PLATFORM" == "linux" ]]; then
     rm $NGROK_ZIP
     echo "ngrok downloaded successfully."
 else
-    echo "On Windows, please download ngrok manually from https://ngrok.com/download."
+    if [[ ! -f "./ngrok/ngrok.exe" ]]; then
+        echo "ngrok.exe not found in ./ngrok folder. Please download and set up ngrok manually from https://ngrok.com/download."
+        exit 1
+	else
+        echo "ngrok.exe found. Proceeding..."
+    fi
 fi
 
 # Step 2: Create a Python virtual environment
 if [[ ! -d "venv" ]]; then
+    echo "Checking if Python is installed..."
+    if [[ "$PLATFORM" == "windows" ]]; then
+        command -v python >/dev/null 2>&1
+    else
+        command -v python3 >/dev/null 2>&1
+    fi
+
+    if [[ $? -ne 0 ]]; then
+        echo "Python is not installed. Please install Python and try again."
+        exit 1
+    fi
+
     echo "Creating Python virtual environment..."
     if [[ "$PLATFORM" == "windows" ]]; then
         python -m venv venv
@@ -113,6 +147,8 @@ if [[ ! -d "venv" ]]; then
         python3 -m venv venv
     fi
     echo "Virtual environment created."
+else
+    echo "Virtual environment already exists."
 fi
 
 # Step 3: Activate the virtual environment and install dependencies
@@ -155,4 +191,4 @@ if [[ "$PLATFORM" == "windows" ]]; then
 else
     echo "source venv/bin/activate"
 fi
-echo "To run ngrok, execute: ./ngrok http 5000"
+

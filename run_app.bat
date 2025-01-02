@@ -1,6 +1,25 @@
 @echo off
-rem Start ngrok in a separate window
-start "ngrok" cmd /k ".\ngrok\ngrok http --url=oriented-bunny-totally.ngrok-free.app 5000"
+rem Define the configuration file
+set "CONFIG_FILE=config.ini"
+
+rem Initialize variables
+set "SERVER_URL="
+
+rem Read the SERVER_URL from the config.ini file
+for /f "usebackq tokens=1,2 delims== " %%A in ("%CONFIG_FILE%") do (
+    if "%%A"=="SERVER_URL" set "SERVER_URL=%%B"
+)
+
+rem Check if SERVER_URL was retrieved
+if not defined SERVER_URL (
+    echo SERVER_URL not found in config.ini. Exiting...
+    pause
+    exit /b
+)
+
+rem Start ngrok in a separate window with the dynamic SERVER_URL
+echo Starting ngrok with SERVER_URL: %SERVER_URL%
+start "ngrok" cmd /k ".\ngrok\ngrok http --url=%SERVER_URL% 5000"
 
 rem Start the Python application in a separate window
 start "Python App" cmd /k "call venv\Scripts\activate && python -B app.py"
