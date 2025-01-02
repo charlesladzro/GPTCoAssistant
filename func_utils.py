@@ -91,20 +91,20 @@ def ensure_git_repo(path):
 
 
 def configure_git_user():
-    """Ensure Git global username and email are set."""
+    """Ensure Git username and email are set locally for the current repository."""
     try:
-        # Check if user.email is set
-        subprocess.run(["git", "config", "--global", "user.email"], check=True, text=True, capture_output=True)
+        # Check if user.email is set locally
+        subprocess.run(["git", "config", "--local", "user.email"], check=True, text=True, capture_output=True)
     except subprocess.CalledProcessError:
-        # Set default email if not configured
-        subprocess.run(["git", "config", "--global", "user.email", "you@example.com"], check=True, text=True)
+        # Set default email locally if not configured
+        subprocess.run(["git", "config", "--local", "user.email", ""], check=True, text=True)
 
     try:
-        # Check if user.name is set
-        subprocess.run(["git", "config", "--global", "user.name"], check=True, text=True, capture_output=True)
+        # Check if user.name is set locally
+        subprocess.run(["git", "config", "--local", "user.name"], check=True, text=True, capture_output=True)
     except subprocess.CalledProcessError:
-        # Set default name if not configured
-        subprocess.run(["git", "config", "--global", "user.name", "Your Name"], check=True, text=True)
+        # Set default name locally if not configured
+        subprocess.run(["git", "config", "--local", "user.name", "GPTCoAssistant"], check=True, text=True)
 
 def resolve_path(path):
     """Resolve the path relative to START_DIR."""
