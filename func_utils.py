@@ -46,7 +46,7 @@ def commit_changes(commit_message_key):
                     )
                     if diff_result.stdout.strip():
                         # Commit the changes
-                        subprocess.run(["git", "commit", "-m", commit_message], cwd=repo_path, check=True, text=True)
+                        subprocess.run(["git", "commit", "-m", commit_message, "--author", "GPTCoAssistant <>"], cwd=repo_path, check=True, text=True)
 
                     # Retrieve the commit SHA
                     result = subprocess.run(
@@ -70,9 +70,6 @@ def commit_changes(commit_message_key):
 def ensure_git_repo(path):
     """Ensure the directory is a Git repository, initialize if not."""
     try:
-        # Ensure Git user is configured globally
-        configure_git_user()
-
         # Initialize Git repository
         subprocess.run(["git", "init"], cwd=path, check=True, text=True)
 
@@ -84,27 +81,10 @@ def ensure_git_repo(path):
 
         # Stage all existing files and create an initial commit
         subprocess.run(["git", "add", "."], cwd=path, check=True, text=True)
-        subprocess.run(["git", "commit", "-m", "Initial commit"], cwd=path, check=True, text=True)
+        subprocess.run(["git", "commit", "-m", "Initial commit", "--author", "GPTCoAssistant <>"], cwd=path, check=True, text=True)
 
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"Git operation failed: {e}")
-
-
-def configure_git_user():
-    """Ensure Git username and email are set locally for the current repository."""
-    try:
-        # Check if user.email is set locally
-        subprocess.run(["git", "config", "--local", "user.email"], check=True, text=True, capture_output=True)
-    except subprocess.CalledProcessError:
-        # Set default email locally if not configured
-        subprocess.run(["git", "config", "--local", "user.email", ""], check=True, text=True)
-
-    try:
-        # Check if user.name is set locally
-        subprocess.run(["git", "config", "--local", "user.name"], check=True, text=True, capture_output=True)
-    except subprocess.CalledProcessError:
-        # Set default name locally if not configured
-        subprocess.run(["git", "config", "--local", "user.name", "GPTCoAssistant"], check=True, text=True)
 
 def resolve_path(path):
     """Resolve the path relative to START_DIR."""
