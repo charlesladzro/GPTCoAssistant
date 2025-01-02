@@ -1,5 +1,5 @@
 def get_file_operations_spec():
-    """OpenAPI specification for file operations."""
+    """OpenAPI specification (https://spec.openapis.org/oas/v3.1.0.html) for file operations."""
     return {
         "/file_operations": {
             "post": {

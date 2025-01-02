@@ -1,5 +1,5 @@
 def get_adv_file_modifier_spec():
-    """OpenAPI specification for advanced file modification."""
+    """OpenAPI specification (https://spec.openapis.org/oas/v3.1.0.html) for advanced file modification."""
     return {
         "/adv_file_modifier": {
             "post": {

@@ -1,5 +1,5 @@
 def get_git_operations_spec():
-    """OpenAPI specification for Git operations."""
+    """OpenAPI specification (https://spec.openapis.org/oas/v3.1.0.html) for Git operations."""
     return {
         "/git_operations": {
             "post": {

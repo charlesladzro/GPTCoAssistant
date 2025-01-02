@@ -1,5 +1,5 @@
 def get_python_operations_spec():
-    """OpenAPI specification for Python operations."""
+    """OpenAPI specification (https://spec.openapis.org/oas/v3.1.0.html) for Python operations."""
     return {
         "/python_operations": {
             "post": {

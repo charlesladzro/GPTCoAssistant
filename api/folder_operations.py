@@ -1,5 +1,5 @@
 def get_folder_operations_spec():
-    """OpenAPI specification for folder operations."""
+    """OpenAPI specification (https://spec.openapis.org/oas/v3.1.0.html) for folder operations."""
     return {
         "/folder_operations": {
             "post": {
