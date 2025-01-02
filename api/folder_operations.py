@@ -2,57 +2,43 @@ def get_folder_operations_spec():
     """OpenAPI specification for folder operations."""
     return {
         "/folder_operations": {
-            "get": {
+            "post": {
                 "operationId": "folderOperations",
                 "summary": "Performs basic folder operations (create, delete, rename, move, copy, list).",
-                "parameters": [
-                    {
-                        "name": "operation",
-                        "in": "query",
-                        "description": (
-                            "The operation to perform ('create', 'delete', 'rename', 'move', 'copy', 'list'). "
-                            "Required."
-                        ),
-                        "required": True,
-                        "schema": {"type": "string"}
-                    },
-                    {
-                        "name": "path",
-                        "in": "query",
-                        "description": "Relative path to the folder. Required.",
-                        "required": True,
-                        "schema": {"type": "string"}
-                    },
-                    {
-                        "name": "commitMessage",
-                        "in": "query",
-                        "description": (
-                            "Commit message for operations that modify the folder structure "
-                            "('create', 'delete', 'rename', 'move', 'copy'). Required for these operations."
-                        ),
-                        "required": False,
-                        "schema": {"type": "string"}
-                    },
-                    {
-                        "name": "targetPath",
-                        "in": "query",
-                        "description": (
-                            "Target path for renaming, moving, or copying. "
-                            "Required for 'rename', 'move', and 'copy' operations."
-                        ),
-                        "required": False,
-                        "schema": {"type": "string"}
-                    },
-                    {
-                        "name": "recursive",
-                        "in": "query",
-                        "description": (
-                            "Whether to include all contents recursively (for 'delete' and 'list'). Defaults to 'false'."
-                        ),
-                        "required": False,
-                        "schema": {"type": "boolean", "default": False}
+                "requestBody": {
+                    "required": True,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "operation": {
+                                        "type": "string",
+                                        "description": "The operation to perform ('create', 'delete', 'rename', 'move', 'copy', 'list')."
+                                    },
+                                    "path": {
+                                        "type": "string",
+                                        "description": "Relative path to the folder."
+                                    },
+                                    "commitMessage": {
+                                        "type": "string",
+                                        "description": "Commit message for operations that modify the folder structure ('create', 'delete', 'rename', 'move', 'copy')."
+                                    },
+                                    "targetPath": {
+                                        "type": "string",
+                                        "description": "Target path for renaming, moving, or copying (required for 'rename', 'move', and 'copy' operations)."
+                                    },
+                                    "recursive": {
+                                        "type": "boolean",
+                                        "description": "Whether to include all contents recursively (for 'delete' and 'list'). Defaults to 'false'.",
+                                        "default": False
+                                    }
+                                },
+                                "required": ["operation", "path"]
+                            }
+                        }
                     }
-                ],
+                },
                 "responses": {
                     "200": {
                         "description": "Operation completed successfully.",

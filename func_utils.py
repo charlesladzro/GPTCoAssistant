@@ -23,7 +23,7 @@ def commit_changes(commit_message_key):
 
             if status_code == 202:  # Only commit if the operation was successful
                 # Extract the commit message from kwargs
-                commit_message = request.args.get(commit_message_key)
+                commit_message = request.get_json().get(commit_message_key)
                 if not commit_message:
                     return {"error": f"The '{commit_message_key}' parameter is required."}, 400
                 try:

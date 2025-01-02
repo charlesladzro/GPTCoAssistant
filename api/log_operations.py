@@ -2,18 +2,25 @@ def get_log_operations_spec():
     """OpenAPI specification for log operations."""
     return {
         "/log_operations": {
-            "get": {
+            "post": {
                 "operationId": "logOperations",
                 "summary": "Retrieve logs of requests and responses.",
-                "parameters": [
-                    {
-                        "name": "date",
-                        "in": "query",
-                        "description": "Filter logs by date (YYYY-MM-DD format).",
-                        "required": False,
-                        "schema": {"type": "string"}
+                "requestBody": {
+                    "required": False,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "date": {
+                                        "type": "string",
+                                        "description": "Filter logs by date (YYYY-MM-DD format)."
+                                    }
+                                }
+                            }
+                        }
                     }
-                ],
+                },
                 "responses": {
                     "200": {
                         "description": "Logs retrieved successfully.",

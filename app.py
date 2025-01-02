@@ -40,7 +40,7 @@ def register_actions():
             if hasattr(module, action_name):
                 action_func = getattr(module, action_name)
                 endpoint = f"/{filename[:-3]}"
-                app.add_url_rule(endpoint, action_name, require_api_key(action_func), methods=['GET', 'POST'])
+                app.add_url_rule(endpoint, action_name, require_api_key(action_func), methods=['POST'])
 
 register_actions()
 

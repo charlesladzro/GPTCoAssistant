@@ -7,15 +7,20 @@ from func_utils import resolve_path, commit_changes
 @commit_changes("commitMessage")
 def file_operations_action():
     """Action handler for basic file operations."""
-    operation = request.args.get('operation')
-    path = request.args.get('path')
-    target_path = request.args.get('targetPath', None)  # For copy, move, or rename
-    encoding = request.args.get('encoding', 'utf-8')
-    content = request.args.get('content', None)
-    commit_message = request.args.get('commitMessage')
+    # Parse JSON body for POST requests
+    data = request.get_json()
+    if not data:
+        return {"error": "Invalid or missing JSON body."}, 400
+
+    operation = data.get('operation')
+    path = data.get('path')
+    target_path = data.get('targetPath', None)  # For copy, move, or rename
+    encoding = data.get('encoding', 'utf-8')
+    content = data.get('content', None)
+    commit_message = data.get('commitMessage')
 
     if not operation or not path:
-        return {"error": "The 'operation' and 'path' parameters are required."}, 400
+        return {"error": "The 'operation' and 'path' fields are required in the request body."}, 400
 
     try:
         resolved_path = resolve_path(path)
@@ -35,11 +40,6 @@ def file_operations_action():
 
             if not content:
                 return {"error": "The 'content' parameter is required for writing."}, 400
-            
-            if path.endswith(".py"):
-                _, _, main_guard_found = detect_blocking_functions(content)
-                if not(main_guard_found):
-                    return {"error": f"\nif __name__ == '__main__:' not found"}, 400
 
             with open(resolved_path, 'w', encoding=encoding) as file:
                 file.write(content)

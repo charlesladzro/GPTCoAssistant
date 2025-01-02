@@ -2,60 +2,50 @@ def get_git_operations_spec():
     """OpenAPI specification for Git operations."""
     return {
         "/git_operations": {
-            "get": {
+            "post": {
                 "operationId": "gitOperations",
                 "summary": "Performs Git operations (init, clone, pull, add, commit, push, branch, checkout, status, log).",
-                "parameters": [
-                    {
-                        "name": "operation",
-                        "in": "query",
-                        "description": "The Git operation to perform ('clone', 'pull', 'add', 'commit', 'push', 'branch', 'checkout', 'status', 'log'). Required.",
-                        "required": True,
-                        "schema": {"type": "string"}
-                    },
-                    {
-                        "name": "repoPath",
-                        "in": "query",
-                        "description": "Path to the Git repository (required for 'pull', 'add', 'commit', 'push', 'branch', 'checkout', 'status', 'log').",
-                        "required": False,
-                        "schema": {"type": "string"}
-                    },
-                    {
-                        "name": "remoteUrl",
-                        "in": "query",
-                        "description": "Remote URL for cloning. Required for 'clone'.",
-                        "required": False,
-                        "schema": {"type": "string"}
-                    },
-                    {
-                        "name": "targetPath",
-                        "in": "query",
-                        "description": "Target path for cloning. Required for 'clone'.",
-                        "required": False,
-                        "schema": {"type": "string"}
-                    },
-                    {
-                        "name": "branchName",
-                        "in": "query",
-                        "description": "Branch name for branch or checkout operations.",
-                        "required": False,
-                        "schema": {"type": "string"}
-                    },
-                    {
-                        "name": "commitMessage",
-                        "in": "query",
-                        "description": "Commit message for 'commit'.",
-                        "required": False,
-                        "schema": {"type": "string"}
-                    },
-                    {
-                        "name": "files",
-                        "in": "query",
-                        "description": "Files to add (space-separated list). Defaults to all files.",
-                        "required": False,
-                        "schema": {"type": "string"}
+                "requestBody": {
+                    "required": True,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "operation": {
+                                        "type": "string",
+                                        "description": "The Git operation to perform ('clone', 'pull', 'add', 'commit', 'push', 'branch', 'checkout', 'status', 'log')."
+                                    },
+                                    "repoPath": {
+                                        "type": "string",
+                                        "description": "Path to the Git repository (required for 'pull', 'add', 'commit', 'push', 'branch', 'checkout', 'status', 'log')."
+                                    },
+                                    "remoteUrl": {
+                                        "type": "string",
+                                        "description": "Remote URL for cloning (required for 'clone')."
+                                    },
+                                    "targetPath": {
+                                        "type": "string",
+                                        "description": "Target path for cloning (required for 'clone')."
+                                    },
+                                    "branchName": {
+                                        "type": "string",
+                                        "description": "Branch name for branch or checkout operations."
+                                    },
+                                    "commitMessage": {
+                                        "type": "string",
+                                        "description": "Commit message for 'commit'."
+                                    },
+                                    "files": {
+                                        "type": "string",
+                                        "description": "Files to add (space-separated list). Defaults to all files."
+                                    }
+                                },
+                                "required": ["operation"]
+                            }
+                        }
                     }
-                ],
+                },
                 "responses": {
                     "200": {
                         "description": "Operation completed successfully.",

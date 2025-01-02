@@ -6,14 +6,19 @@ from func_utils import resolve_path, commit_changes
 @commit_changes("commitMessage")
 def folder_operations_action():
     """Action handler for basic folder operations."""
-    operation = request.args.get('operation')
-    path = request.args.get('path')
-    target_path = request.args.get('targetPath', None)  # For copy, move, or rename
-    recursive = request.args.get('recursive', 'false').lower() == 'true'  # For delete and list
-    commit_message = request.args.get('commitMessage')  # Commit message for relevant operations
+    # Parse JSON body for POST requests
+    data = request.get_json()
+    if not data:
+        return {"error": "Invalid or missing JSON body."}, 400
+
+    operation = data.get('operation')
+    path = data.get('path')
+    target_path = data.get('targetPath', None)  # For copy, move, or rename
+    recursive = data.get('recursive', False)  # For delete and list
+    commit_message = data.get('commitMessage')  # Commit message for relevant operations
 
     if not operation or not path:
-        return {"error": "The 'operation' and 'path' parameters are required."}, 400
+        return {"error": "The 'operation' and 'path' fields are required in the request body."}, 400
 
     try:
         resolved_path = resolve_path(path)

@@ -10,13 +10,17 @@ from actions.file_operations import detect_blocking_functions
 @commit_changes("commitMessage")
 def python_operations_action():
     """Action handler for secure Python operations."""
-
-    operation = request.args.get('operation')
-    script_path = request.args.get('scriptPath', None)  # Pour exécuter un fichier Python
-    package_name = request.args.get('packageName', None)  # Pour pip install/uninstall
-    module_name = request.args.get('moduleName', None)  # Pour gestion des modules
-    inputs_for_test = request.args.get('inputs_for_test', None)
-    commit_message = request.args.get('commitMessage', None)
+    # Parse JSON body for POST requests
+    data = request.get_json()
+    if not data:
+        return {"error": "Invalid or missing JSON body."}, 400
+    
+    operation = data.get('operation')
+    script_path = data.get('scriptPath', None)  # Pour exécuter un fichier Python
+    package_name = data.get('packageName', None)  # Pour pip install/uninstall
+    module_name = data.get('moduleName', None)  # Pour gestion des modules
+    inputs_for_test = data.get('inputs_for_test', None)
+    commit_message = data.get('commitMessage', None)
 
     # Résolution des chemins
     script_path = resolve_path(script_path) if script_path else None

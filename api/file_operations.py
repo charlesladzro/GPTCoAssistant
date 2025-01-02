@@ -2,56 +2,47 @@ def get_file_operations_spec():
     """OpenAPI specification for file operations."""
     return {
         "/file_operations": {
-            "get": {
+            "post": {
                 "operationId": "fileOperations",
                 "summary": "Performs basic file operations (read, write, delete, rename, move, copy).",
-                "parameters": [
-                    {
-                        "name": "operation",
-                        "in": "query",
-                        "description": "The operation to perform ('read', 'write', 'delete', 'rename', 'move', 'copy'). Required.",
-                        "required": True,
-                        "schema": {"type": "string"}
-                    },
-                    {
-                        "name": "path",
-                        "in": "query",
-                        "description": "Relative path to the file. Required.",
-                        "required": True,
-                        "schema": {"type": "string"}
-                    },
-                    {
-                        "name": "commitMessage",
-                        "in": "query",
-                        "description": (
-                            "Commit message for operations that modify the file system "
-                            "('write', 'delete', 'rename', 'move', 'copy'). Required for these operations."
-                        ),
-                        "required": False,
-                        "schema": {"type": "string"}
-                    },
-                    {
-                        "name": "content",
-                        "in": "query",
-                        "description": "Content to write to the file (required for 'write' operation).",
-                        "required": False,
-                        "schema": {"type": "string"}
-                    },
-                    {
-                        "name": "targetPath",
-                        "in": "query",
-                        "description": "Target path for renaming, moving, or copying. Required for 'rename', 'move', and 'copy' operations.",
-                        "required": False,
-                        "schema": {"type": "string"}
-                    },
-                    {
-                        "name": "encoding",
-                        "in": "query",
-                        "description": "The file encoding. Defaults to 'utf-8'.",
-                        "required": False,
-                        "schema": {"type": "string", "default": "utf-8"}
+                "requestBody": {
+                    "required": True,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "operation": {
+                                        "type": "string",
+                                        "description": "The operation to perform ('read', 'write', 'delete', 'rename', 'move', 'copy')."
+                                    },
+                                    "path": {
+                                        "type": "string",
+                                        "description": "Relative path to the file."
+                                    },
+                                    "commitMessage": {
+                                        "type": "string",
+                                        "description": "Commit message for operations that modify the file system ('write', 'delete', 'rename', 'move', 'copy')."
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "description": "Content to write to the file (required for 'write' operation)."
+                                    },
+                                    "targetPath": {
+                                        "type": "string",
+                                        "description": "Target path for renaming, moving, or copying (required for 'rename', 'move', and 'copy' operations)."
+                                    },
+                                    "encoding": {
+                                        "type": "string",
+                                        "description": "The file encoding. Defaults to 'utf-8'.",
+                                        "default": "utf-8"
+                                    }
+                                },
+                                "required": ["operation", "path"]
+                            }
+                        }
                     }
-                ],
+                },
                 "responses": {
                     "200": {
                         "description": "Operation completed successfully.",

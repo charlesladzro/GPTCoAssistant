@@ -5,14 +5,18 @@ from func_utils import resolve_path
 
 def git_operations_action():
     """Action handler for basic Git operations."""
+    # Parse JSON body for POST requests
+    data = request.get_json()
+    if not data:
+        return {"error": "Invalid or missing JSON body."}, 400
     
-    operation = request.args.get('operation')
-    repo_path = request.args.get('repoPath')
-    remote_url = request.args.get('remoteUrl', None)
-    branch_name = request.args.get('branchName', None)
-    commit_message = request.args.get('commitMessage', None)
-    target_path = request.args.get('targetPath', None)  # Pour clone
-    files = request.args.get('files', None)  # Pour add
+    operation = data.get('operation')
+    repo_path = data.get('repoPath')
+    remote_url = data.get('remoteUrl', None)
+    branch_name = data.get('branchName', None)
+    commit_message = data.get('commitMessage', None)
+    target_path = data.get('targetPath', None)  # Pour clone
+    files = data.get('files', None)  # Pour add
     resolved_repo_path = resolve_path(repo_path) if repo_path else None
 
     if not operation:

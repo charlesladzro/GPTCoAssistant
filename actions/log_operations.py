@@ -5,8 +5,13 @@ from func_utils import resolve_path
 
 def log_operations_action():
     """Retrieve logs based on filters."""
+    # Parse JSON body for POST requests
+    data = request.get_json()
+    if not data:
+        return {"error": "Invalid or missing JSON body."}, 400
+    
     log_dir = resolve_path("logs")
-    date_filter = request.args.get("date")  # YYYY-MM-DD format
+    date_filter = data.get("date")  # YYYY-MM-DD format
     log_file = os.path.join(log_dir, f"{date_filter}.log") if date_filter else None
 
     try:
